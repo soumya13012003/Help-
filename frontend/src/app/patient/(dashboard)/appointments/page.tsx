@@ -59,7 +59,7 @@ export default function PatientAppointmentsPage() {
     // Fetch doctors for the dropdown
     const fetchDoctors = async () => {
       try {
-        const docRes = await fetch(`${IAM_SERVICE_URL}/users/doctors');
+        const docRes = await fetch(`${IAM_SERVICE_URL}/users/doctors`);
         if (docRes.ok) {
           const docData = await docRes.json();
           const activeDocs = docData.filter((d: Doctor) => d.status === 'ACTIVE');

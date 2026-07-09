@@ -40,17 +40,17 @@ export default function AppointmentQueuePage() {
     try {
       setLoading(true);
       // Fetch queue
-      const reqRes = await fetch(`${PATIENT_SERVICE_URL}/clinical/appointments/queue');
+      const reqRes = await fetch(`${PATIENT_SERVICE_URL}/clinical/appointments/queue`);
       if (reqRes.ok) {
         setRequests(await reqRes.json());
       }
       // Fetch all appointments
-      const allRes = await fetch(`${PATIENT_SERVICE_URL}/clinical/appointments/all');
+      const allRes = await fetch(`${PATIENT_SERVICE_URL}/clinical/appointments/all`);
       if (allRes.ok) {
         setAllAppointments(await allRes.json());
       }
       // Fetch doctors for assignment
-      const docRes = await fetch(`${IAM_SERVICE_URL}/users/doctors');
+      const docRes = await fetch(`${IAM_SERVICE_URL}/users/doctors`);
       if (docRes.ok) {
         const docData = await docRes.json();
         setDoctors(docData.filter((d: Doctor) => d.status === 'ACTIVE'));

@@ -23,7 +23,7 @@ export default function UserManagementPage() {
 
   const fetchDoctors = async () => {
     try {
-      const response = await fetch(`${IAM_SERVICE_URL}/users/doctors');
+      const response = await fetch(`${IAM_SERVICE_URL}/users/doctors`);
       if (response.ok) {
         const data = await response.json();
         setDoctors(data);
