@@ -1,0 +1,15 @@
+mlflow
+chromadb
+sentence-transformers
+pika
+numpy
+scikit-learn
+shap
+redis
+pandas
+pydantic
+scipy
+requests
+fastapi
+uvicorn
+apscheduler

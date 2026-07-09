@@ -1,0 +1,92 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Clinician BFF Inference Payload",
+  "description": "Strict JSON schema for the final Clinician BFF payload, combining Model Version, Confidence, SHAP vectors, and RAG references.",
+  "required": [
+    "inference_id",
+    "patient_id",
+    "timestamp",
+    "model_metadata",
+    "prediction",
+    "explainability",
+    "clinical_context"
+  ],
+  "properties": {
+    "inference_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "patient_id": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "model_metadata": {
+      "type": "object",
+      "required": ["model_name", "model_version", "stage"],
+      "properties": {
+        "model_name": { "type": "string" },
+        "model_version": { "type": "string" },
+        "stage": { "type": "string", "enum": ["Staging", "Production"] }
+      }
+    },
+    "prediction": {
+      "type": "object",
+      "required": ["risk_score", "confidence_interval", "recommended_action"],
+      "properties": {
+        "risk_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "confidence_interval": {
+          "type": "array",
+          "items": { "type": "number" },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "recommended_action": { "type": "string" }
+      }
+    },
+    "explainability": {
+      "type": "object",
+      "required": ["base_value", "top_driving_features"],
+      "properties": {
+        "base_value": { "type": "number" },
+        "top_driving_features": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["feature_name", "impact_score", "contribution_direction"],
+            "properties": {
+              "feature_name": { "type": "string" },
+              "impact_score": { "type": "number" },
+              "contribution_direction": { "type": "string", "enum": ["positive", "negative"] }
+            }
+          }
+        }
+      }
+    },
+    "clinical_context": {
+      "type": "object",
+      "required": ["rag_guidelines"],
+      "properties": {
+        "rag_guidelines": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["text_chunk", "source_uri", "condition_tag"],
+            "properties": {
+              "text_chunk": { "type": "string" },
+              "source_uri": { "type": "string" },
+              "condition_tag": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

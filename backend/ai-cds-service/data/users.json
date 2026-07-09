@@ -1,0 +1,17 @@
+{
+    "dr.mehta@helpplus.health": {
+        "password_hash": "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9",
+        "name": "Dr. Rajan Mehta",
+        "role": "Cardiologist"
+    },
+    "Soumya2003@gmail.com": {
+        "password_hash": "3c8ec3ae84a094a836030a334d65558d4b6cd9d67e6291b08932d297d56b65e1",
+        "name": "Soumya",
+        "role": "Cardiologist"
+    },
+    "soumyadeepbarik12@gmail.com": {
+        "password_hash": "7bef5118ef18a898bbf3bff8e5f816393dd32bf4839424197a27885f5747a98e",
+        "name": "Dr.Soumya",
+        "role": "Cardiologist"
+    }
+}

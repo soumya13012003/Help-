@@ -1,0 +1,40 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: audit-service-scaler
+  namespace: help-plus-apps
+spec:
+  scaleTargetRef:
+    name: audit-service
+  minReplicaCount: 2
+  maxReplicaCount: 20
+  pollingInterval: 10
+  cooldownPeriod: 120
+  triggers:
+  - type: rabbitmq
+    metadata:
+      # Target queue for the Audit Service
+      queueName: audit-all-queue
+      # Scale out when there are more than 50 messages pending per pod
+      queueLength: "50"
+      hostFromEnv: RABBITMQ_URI
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: notification-service-scaler
+  namespace: help-plus-apps
+spec:
+  scaleTargetRef:
+    name: notification-service
+  minReplicaCount: 1
+  maxReplicaCount: 15
+  pollingInterval: 15
+  cooldownPeriod: 300
+  triggers:
+  - type: rabbitmq
+    metadata:
+      queueName: notification-queue
+      # Scale out aggressively for patient communications
+      queueLength: "20"
+      hostFromEnv: RABBITMQ_URI

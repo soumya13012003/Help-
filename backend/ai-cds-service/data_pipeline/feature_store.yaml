@@ -1,0 +1,8 @@
+project: help_plus_feature_store
+registry: data/registry.db
+provider: local
+offline_store:
+    type: file
+online_store:
+    type: redis
+    connection_string: "redis-cluster.help-plus-infra.svc.cluster.local:6379,db=0"

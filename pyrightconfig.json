@@ -1,0 +1,7 @@
+{
+  "venvPath": "backend/ai-cds-service",
+  "venv": ".venv",
+  "extraPaths": [
+    "backend/ai-cds-service"
+  ]
+}

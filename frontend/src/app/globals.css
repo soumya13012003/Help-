@@ -1,0 +1,100 @@
+@import "tailwindcss";
+
+:root {
+  /* Light Mode Backgrounds */
+  --background: #F8F9FA;
+  --foreground: #171717;
+  --surface: #FFFFFF;
+  --surface-border: #E5E7EB;
+
+  /* Primary & Secondary Brand Colors */
+  --primary: #0F52BA;
+  --primary-foreground: #FFFFFF;
+  --secondary: #20B2AA;
+  --secondary-foreground: #FFFFFF;
+
+  /* Semantic Alerts */
+  --critical: #D32F2F;
+  --critical-foreground: #FFFFFF;
+  --warning: #F57C00;
+  --warning-foreground: #FFFFFF;
+  --success: #388E3C;
+  --success-foreground: #FFFFFF;
+
+  /* Typography */
+  --font-inter: 'Inter', sans-serif;
+  --font-outfit: 'Outfit', sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Dark Mode Backgrounds */
+    --background: #121212;
+    --foreground: #EDEDED;
+    --surface: #1E1E1E;
+    --surface-border: #333333;
+
+    /* Primary & Secondary Brand Colors */
+    --primary: #2B73EA; /* Slightly lighter for contrast in dark mode */
+    --primary-foreground: #FFFFFF;
+    --secondary: #29C4BD;
+    --secondary-foreground: #FFFFFF;
+
+    /* Semantic Alerts */
+    --critical: #EF5350;
+    --critical-foreground: #FFFFFF;
+    --warning: #FFA726;
+    --warning-foreground: #171717;
+    --success: #66BB6A;
+    --success-foreground: #171717;
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  
+  --color-surface: var(--surface);
+  --color-surface-border: var(--surface-border);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-critical: var(--critical);
+  --color-critical-foreground: var(--critical-foreground);
+  
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-outfit);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Glassmorphism Utility Class */
+.glass {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+@media (prefers-color-scheme: dark) {
+  .glass {
+    background: rgba(30, 30, 30, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+}

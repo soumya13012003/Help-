@@ -1,0 +1,95 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Clinician BFF XAI Payload",
+  "description": "JSON schema linking predictions, SHAP vectors, LIME highlights, visual assets, and RAG citations.",
+  "required": ["metadata", "prediction", "explainability", "clinical_context"],
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "required": ["inference_id", "patient_sk", "model_version_hash", "audit_seal"],
+      "properties": {
+        "inference_id": { "type": "string", "format": "uuid" },
+        "patient_sk": { "type": "string" },
+        "model_version_hash": { "type": "string" },
+        "audit_seal": { "type": "string", "description": "SHA-256 cryptographic hash of the explanation log" }
+      }
+    },
+    "prediction": {
+      "type": "object",
+      "required": ["risk_category", "risk_score", "confidence_interval", "recommended_action", "declarative_summary"],
+      "properties": {
+        "risk_category": { "type": "string", "enum": ["High", "Low"] },
+        "risk_score": { "type": "number", "minimum": 0, "maximum": 1 },
+        "confidence_interval": {
+          "type": "array",
+          "items": { "type": "number" },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "recommended_action": { "type": "string" },
+        "declarative_summary": { "type": "string", "description": "Natural language generation of the core drivers" }
+      }
+    },
+    "explainability": {
+      "type": "object",
+      "required": ["top_structured_factors", "top_unstructured_factors", "visual_assets"],
+      "properties": {
+        "top_structured_factors": {
+          "type": "array",
+          "description": "SHAP Tree/Kernel Attributions",
+          "items": {
+            "type": "object",
+            "required": ["feature_id", "raw_weight", "percentage_impact"],
+            "properties": {
+              "feature_id": { "type": "string" },
+              "raw_weight": { "type": "number" },
+              "percentage_impact": { "type": "number" },
+              "description": { "type": "string" }
+            }
+          }
+        },
+        "top_unstructured_factors": {
+          "type": "array",
+          "description": "LIME Text Surrogate Attributions",
+          "items": {
+            "type": "object",
+            "required": ["feature_id", "raw_weight", "percentage_impact"],
+            "properties": {
+              "feature_id": { "type": "string" },
+              "raw_weight": { "type": "number" },
+              "percentage_impact": { "type": "number" },
+              "description": { "type": "string" }
+            }
+          }
+        },
+        "visual_assets": {
+          "type": "object",
+          "description": "Base64 encoded SVG/PNG images for PDF embedding",
+          "properties": {
+            "structured_shap_chart_base64": { "type": "string" },
+            "unstructured_lime_chart_base64": { "type": "string" }
+          }
+        }
+      }
+    },
+    "clinical_context": {
+      "type": "object",
+      "required": ["rag_guidelines"],
+      "properties": {
+        "rag_guidelines": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["text_chunk", "source_uri", "condition_tag"],
+            "properties": {
+              "text_chunk": { "type": "string" },
+              "source_uri": { "type": "string" },
+              "condition_tag": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

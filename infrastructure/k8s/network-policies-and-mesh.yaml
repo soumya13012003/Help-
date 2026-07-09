@@ -1,0 +1,87 @@
+# ---------------------------------------------------------
+# Kubernetes NetworkPolicies (Layer 4)
+# ---------------------------------------------------------
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: help-plus-apps
+spec:
+  # Deny all ingress and egress traffic by default
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-clinical-to-ai
+  namespace: help-plus-apps
+spec:
+  podSelector:
+    matchLabels:
+      app: ai-cds
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: clinical-service
+    ports:
+    - protocol: TCP
+      port: 8080
+
+---
+# ---------------------------------------------------------
+# Istio Service Mesh AuthorizationPolicies (Layer 7 mTLS)
+# ---------------------------------------------------------
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: default-strict-mtls
+  namespace: help-plus-apps
+spec:
+  # Enforce STRICT mTLS across the entire namespace. Plaintext is rejected.
+  mtls:
+    mode: STRICT
+
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: ai-cds-authz
+  namespace: help-plus-apps
+spec:
+  selector:
+    matchLabels:
+      app: ai-cds
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        # Cryptographically verify the caller is the clinical service via its SPIFFE identity
+        principals: ["cluster.local/ns/help-plus-apps/sa/clinical-service-account"]
+    to:
+    - operation:
+        methods: ["POST"]
+        paths: ["/api/v1/analyze", "/api/v1/suggest"]
+
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: bff-authz
+  namespace: help-plus-apps
+spec:
+  selector:
+    matchLabels:
+      component: bff
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        # Only the Edge Gateway (Nginx/Envoy) can communicate with the BFFs
+        principals: ["cluster.local/ns/help-plus-infra/sa/edge-gateway-account"]

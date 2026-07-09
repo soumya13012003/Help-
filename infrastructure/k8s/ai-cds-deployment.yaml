@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-cds-service
+  namespace: help-plus-apps
+  labels:
+    app: ai-cds
+    component: ml-inference
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ai-cds
+  template:
+    metadata:
+      labels:
+        app: ai-cds
+        # Istio injection for mTLS zero-trust mesh
+        sidecar.istio.io/inject: "true" 
+    spec:
+      # Isolate to GPU node pools
+      nodeSelector:
+        cloud.google.com/gke-accelerator: nvidia-tesla-t4
+      
+      # Tolerate the NoSchedule taint on GPU nodes so only specialized workloads land here
+      tolerations:
+      - key: "nvidia.com/gpu"
+        operator: "Exists"
+        effect: "NoSchedule"
+
+      containers:
+      - name: ai-inference-container
+        image: gcr.io/help-plus-infra/ai-cds-service:v1.2.4
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        
+        # Strictly define GPU resource requests
+        resources:
+          limits:
+            nvidia.com/gpu: 1
+            memory: "16Gi"
+            cpu: "4"
+          requests:
+            nvidia.com/gpu: 1
+            memory: "8Gi"
+            cpu: "2"
+        
+        env:
+        - name: MLFLOW_TRACKING_URI
+          value: "http://mlflow-server.help-plus-ai.svc.cluster.local:5000"
+        - name: CHROMADB_HOST
+          value: "chromadb.help-plus-ai.svc.cluster.local"
+        
+        # Probes ensure traffic isn't routed until the LLM weights are loaded into VRAM
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: 8080
+          initialDelaySeconds: 45
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 15

@@ -1,0 +1,32 @@
+services:
+  # IAM Service
+  - type: web
+    name: iam-service
+    env: node
+    buildCommand: cd backend/iam-service && npm install && npm run build
+    startCommand: cd backend/iam-service && npm run start:prod
+    envVars:
+      - key: PORT
+        value: 3001
+      - key: DATABASE_URL
+        value: /data/iam_db.sqlite
+    disk:
+      name: iam-data
+      mountPath: /data
+      sizeGB: 1
+
+  # Patient Service
+  - type: web
+    name: patient-service
+    env: node
+    buildCommand: cd backend/patient-service && npm install && npm run build
+    startCommand: cd backend/patient-service && npm run start:prod
+    envVars:
+      - key: PORT
+        value: 3003
+      - key: DATABASE_URL
+        value: /data/patient_db.sqlite
+    disk:
+      name: patient-data
+      mountPath: /data
+      sizeGB: 1
