@@ -1,5 +1,5 @@
-import { IAM_SERVICE_URL, PATIENT_SERVICE_URL } from '../../../../../config';
 "use client";
+import { IAM_SERVICE_URL, PATIENT_SERVICE_URL } from '@/config';
 
 import React, { useState, useEffect } from 'react';
 import { Shield, ShieldAlert, CheckCircle, XCircle, Search, MoreVertical } from 'lucide-react';
