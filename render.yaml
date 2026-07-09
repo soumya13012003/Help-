@@ -9,11 +9,8 @@ services:
       - key: PORT
         value: 3001
       - key: DATABASE_URL
-        value: /data/iam_db.sqlite
-    disk:
-      name: iam-data
-      mountPath: /data
-      sizeGB: 1
+        value: ./iam_db.sqlite
+    plan: free
 
   # Patient Service
   - type: web
@@ -25,8 +22,5 @@ services:
       - key: PORT
         value: 3003
       - key: DATABASE_URL
-        value: /data/patient_db.sqlite
-    disk:
-      name: patient-data
-      mountPath: /data
-      sizeGB: 1
+        value: ./patient_db.sqlite
+    plan: free
